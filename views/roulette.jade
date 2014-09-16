@@ -1,0 +1,80 @@
+h1 #{title} - Last login was #{lastLogin}
+div#root
+  div#content
+    p#welcome
+      input#nick(placeholder='Enter nickname')
+
+    div(style='float: left; width: 75%;')
+    fieldset
+      legend Bet
+      #bet
+        button(data-bind='click: init, enable: !isPlaying()') Spin
+        button(data-bind='click: stop, enable: isPlaying()') Stop
+        button(data-bind='click: clearBets, enable: bets().any()') Clear Bets
+        br
+        button(data-bind='click: bet, enable: canBet') Add Bet
+        | #
+        input(onkeydown='if(event.keyCode==13) $(this).select()', data-bind='value: betNum, valueUpdate: \'afterkeydown\', enterCommand: bet', style='width: 17px;', maxlength='2', autofocus='autofocus')
+        | $
+        input(data-bind='value: betAmount, valueUpdate: \'afterkeydown\', enterCommand: bet', style='width: 40px;')
+        button(data-bind='click: increaseBet') +
+        button(data-bind='click: decreaseBet') -
+        #chipUnits
+          input(type='radio', name='chipUnit', value='10', data-bind='checked: currentChipValue')
+          | 10
+          input(type='radio', name='chipUnit', value='25', data-bind='checked: currentChipValue')
+          | 25
+          input(type='radio', name='chipUnit', value='50', data-bind='checked: currentChipValue')
+          | 50
+          input(type='radio', name='chipUnit', value='100', data-bind='checked: currentChipValue')
+          | 100
+        | Speed:
+        #slider(data-bind='slideBehaviour: speed')
+        #bank
+          div
+            | Credit      $
+            span(data-bind='text: credit')
+          div
+            | Bet          $
+            span(data-bind='text: totalBetAmount')
+          div
+            | Last Win  $
+            span(data-bind='text: lastWin')
+        #message(data-bind='text: msg, flash: true')
+      #placedBets
+        ul(data-bind='foreach: bets')
+          li
+            | #
+            span(data-bind='text: number')
+            | $
+            span(data-bind='text: amount')
+      #msg-overlay(data-bind='visible: bets().length == 0') No Bets Placed
+      br
+      fieldset
+        legend History
+        ul#hist(data-bind='foreach: history')
+          li(data-bind='style: { background: $parent.numColor($data)}')
+            div(data-bind='text: $data')
+    br
+    fieldset
+      legend Chat
+      input#msg
+      button#send Send
+      div#info
+
+  div#aside
+    fieldset
+      legend Stats
+      | Spins #
+      span(data-bind='text: spins')
+      ul#stats(data-bind='foreach: stats')
+        li
+          div(data-bind='text: number, style: { background: $root.numColor(number)}')
+          div(data-bind='text: count')
+
+script(src='/javascripts/jquery-1.7.1.min.js')
+script(src='/javascripts/jquery-ui.js')
+script(src='/javascripts/knockout.js')
+script(src='/socket.io/socket.io.js')
+script(src='/javascripts/chat.js')
+script(src='/javascripts/roulette.js')
